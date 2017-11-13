@@ -24,6 +24,7 @@ public class DataSender {
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 		BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
 		bufferedWriter.write("hello server, 你能 receiver my data?");
+//		bufferedWriter.write("byebye");
 		bufferedWriter.flush();
 		bufferedWriter.close();
 		socket.close();

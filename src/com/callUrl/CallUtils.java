@@ -3,8 +3,10 @@ package com.callUrl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -143,6 +145,22 @@ public class CallUtils {
 			}
 		}
 		return sql;
+    }
+	 public static void createTxt(String file,StringBuffer row,String character){
+    	OutputStreamWriter osw = null;
+    	try {
+    		osw = new OutputStreamWriter(new FileOutputStream(file,true),character);
+    		osw.write(row.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+	       	 if(osw!=null)//if(osw!=null)
+	             try {
+	             	osw.close();//osw.close();
+	             } catch (IOException e) {
+	                 e.printStackTrace();
+	             }
+	    }
     }
 	public static String format(Date date,String format) {
 		DateFormat df = new SimpleDateFormat(format);

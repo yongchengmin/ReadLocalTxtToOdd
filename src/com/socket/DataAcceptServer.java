@@ -10,7 +10,9 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+//DataSender.java(client)
+//DataAcceptServer.java(server)
+//TcpServer.java(server)
 public class DataAcceptServer {
 	public static String dmy_hms = "yyyy-MM-dd HH:mm:ss";
 	/**
@@ -69,7 +71,7 @@ public class DataAcceptServer {
 				if(getline==null){
 					System.out.println("client:"+number+" "+format(new Date(), dmy_hms));
 				}else{
-					System.out.println("get message from client" + number + " :"+getline);
+					System.out.println("get message from client:" + number + " ("+getline+")");
 				}
 				out.write("ok\n");//返回ok
 				out.flush();
@@ -77,7 +79,7 @@ public class DataAcceptServer {
 					end = true;
 				}
 				try {
-					Thread.sleep(1000*1);//1'
+					Thread.sleep(1000*2);//2'
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
