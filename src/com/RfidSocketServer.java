@@ -36,16 +36,6 @@ public class RfidSocketServer {
 		Socket socket = null;
 		boolean flag = true;
 		
-		try {
-			while(flag){
-				socket = server.accept();
-				MessageAcceptServer.createHandlerThread(socket);
-				send = true;
-			}
-		} finally{
-			server.close();
-		}
-		
         EventQueue.invokeLater(new Runnable(){
             @Override 
             public void run(){
@@ -98,7 +88,15 @@ public class RfidSocketServer {
                 frame.setVisible(true);
             }
         });
-        
+        try {
+			while(flag){
+				socket = server.accept();
+				MessageAcceptServer.createHandlerThread(socket);
+				send = true;
+			}
+		} finally{
+			server.close();
+		}
     }
 	private static String readUsers(){
 		File file = new  File(MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH)
