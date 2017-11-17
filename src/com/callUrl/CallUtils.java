@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -178,5 +180,17 @@ public class CallUtils {
 	}
 	public static boolean isEmpty(String str){
 		return (str == null) || (str.length() == 0);
+	}
+	public static String localIp(){
+		//服务的地址
+		InetAddress address;
+		String localIp = "";
+		try {
+			address = InetAddress.getLocalHost();
+			localIp = address.getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return localIp;
 	}
 }

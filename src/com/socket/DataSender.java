@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import com.callUrl.CallUtils;
+
 public class DataSender {
 
 	/**
@@ -18,13 +20,14 @@ public class DataSender {
 	 * @throws UnknownHostException 
 	 */
 	public static void main(String[] args) throws UnknownHostException, IOException {
-		Socket socket = new Socket("127.0.0.1",8898);
+//		Socket socket = new Socket("127.0.0.1",8898);
+		Socket socket = new Socket("192.168.10.92",8898);
 		//向服务器端程序发送数据
 		OutputStream outputStream = socket.getOutputStream();
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 		BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
 //		bufferedWriter.write("hello server, 你能 receiver my data?");
-		bufferedWriter.write("1234567889");
+		bufferedWriter.write("from:"+CallUtils.localIp());
 		bufferedWriter.flush();
 		bufferedWriter.close();
 		socket.close();
