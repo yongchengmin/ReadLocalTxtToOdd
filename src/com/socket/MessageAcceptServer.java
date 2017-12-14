@@ -16,25 +16,39 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+
+import net.sf.json.JSONObject;
+
+import com.callUrl.ParamsUtil;
+import com.callUrl.RequestUtil;
+import com.print.QuieeDirectPrintJobJava;
 
 //DataSender.java is client.
 public class MessageAcceptServer {
 	public static String dmy_hms = "yyyy-MM-dd HH:mm:ss";
 	public static String charsetName = "UTF-8";
-//	public static void main(String[] args) throws IOException {
-//		ServerSocket server = new ServerSocket(8898);
-//		Socket socket = null;
-//		boolean flag = true;
-//		try {
-//			while(flag){
-//				socket = server.accept();
-//				createHandlerThread(socket);
-//			}
-//		} finally{
-//			server.close();
-//		}
-//	}
+	public static void main(String[] args) throws IOException {
+		/*ServerSocket server = new ServerSocket(8898);
+		Socket socket = null;
+		boolean flag = true;
+		try {
+			while(flag){
+				socket = server.accept();
+				createHandlerThread(socket);
+			}
+		} finally{
+			server.close();
+		}*/
+		String reportParams="id=0;ids=[462260]";//id=0;ids=[172, 173]
+		String appRoot = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appRoot);
+		String reportName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportName);
+		String printServiceName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.printServiceName);
+		QuieeDirectPrintJobJava a = new QuieeDirectPrintJobJava(appRoot, reportName, reportParams,printServiceName);
+		a.print();
+	}
 	
 	public static void createHandlerThread(Socket socket){
 		MessageAcceptServer mas = MessageAcceptServer.getInstance();
@@ -73,6 +87,31 @@ public class MessageAcceptServer {
 			}
 			if(getLine!=null){
 				System.out.println(getLine);
+				
+				//服务器校验
+				String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
+				Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("data", getLine);
+				String result = null;
+				try {
+					result = RequestUtil.post(ParamsUtil.convertObjectToStringParams(paramMap),
+							url);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				System.out.println("result="+result);
+				JSONObject jsonObject = JSONObject.fromObject(result);
+				String status = jsonObject.getString("status");//配置
+				String value = jsonObject.getString("value");//配置
+				System.out.println(status+":"+value);
+				
+				//校验通过打印报表
+				String reportParams="id=0;ids=[219353]";//id=0;ids=[172, 173]
+				String appRoot = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appRoot);
+				String reportName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportName);
+				String printServiceName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.printServiceName);
+//				QuieeDirectPrintJobJava a = new QuieeDirectPrintJobJava(appRoot, reportName, reportParams,printServiceName);
+//				a.print();
 				
 				String path = MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH);
 				mkdir(path);
@@ -130,9 +169,9 @@ public class MessageAcceptServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally{
-	       	 if(osw!=null){
+	       	 if(osw!=null){ 
 	       		try {
-	             	osw.close();//osw.close();
+	             	osw.close();
 	             } catch (IOException e) {
 	                 e.printStackTrace();
 	             }
@@ -148,6 +187,11 @@ public class MessageAcceptServer {
 	protected final static String RFIDTXTURL = "rfidSocketTxtUrl";
 	public final static String LOCALPATH = "localPath";
 	public final static String FILEUSER = "fileUser";
+	
+	public final static String appServer = "appServer";
+	public final static String appRoot = "appRoot";
+	public final static String reportName = "reportName";
+	public final static String printServiceName = "printServiceName";
 	public static String getRfidTxt(String keyName){
 		String url = "";
 		InputStream inputStream = MessageAcceptServer.class.getClassLoader().getResourceAsStream(RFIDTXT);
