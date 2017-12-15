@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.sf.json.JSONObject;
 
 import com.callUrl.ParamsUtil;
@@ -101,22 +103,31 @@ public class MessageAcceptServer {
 				}
 				System.out.println("result="+result);
 				JSONObject jsonObject = JSONObject.fromObject(result);
-				String status = jsonObject.getString("status");//配置
-				String value = jsonObject.getString("value");//配置
+				String status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
+				String value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
 				System.out.println(status+":"+value);
-				
-				//校验通过打印报表
-				String reportParams="id=0;ids=[219353]";//id=0;ids=[172, 173]
-				String appRoot = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appRoot);
-				String reportName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportName);
-				String printServiceName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.printServiceName);
-//				QuieeDirectPrintJobJava a = new QuieeDirectPrintJobJava(appRoot, reportName, reportParams,printServiceName);
-//				a.print();
-				
 				String path = MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH);
 				mkdir(path);
 				path += MessageAcceptServer.getRfidTxt(MessageAcceptServer.FILEUSER);
-				createTxt(path, getLine, charsetName);
+				createTxt(path, status+":"+value+","+getLine, charsetName);
+				if(!StringUtils.isEmpty(status)){
+					if(status.equals(MessageAcceptServer.getRfidTxt(MessageAcceptServer.success))){
+						//校验通过打印报表
+						String reportParams="id=0;"+MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportParams)+"="+value;//id=0;ids=[172, 173]
+						String appRoot = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appRoot);
+						String reportName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportName);
+						String printServiceName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.printServiceName);
+						QuieeDirectPrintJobJava a = new QuieeDirectPrintJobJava(appRoot, reportName, reportParams,printServiceName);
+						a.print();
+						System.out.println(appRoot);
+					}else if(status.equals(MessageAcceptServer.getRfidTxt(MessageAcceptServer.error))){
+						
+					}else{
+						
+					}
+				}else{
+					
+				}
 			}else{
 				System.out.println(format(new Date(), dmy_hms));
 			}
@@ -192,6 +203,12 @@ public class MessageAcceptServer {
 	public final static String appRoot = "appRoot";
 	public final static String reportName = "reportName";
 	public final static String printServiceName = "printServiceName";
+	public final static String reportParams = "reportParams";
+	
+	public final static String status = "status";
+	public final static String value = "value";
+	public final static String success = "success";
+	public final static String error = "error";
 	public static String getRfidTxt(String keyName){
 		String url = "";
 		InputStream inputStream = MessageAcceptServer.class.getClassLoader().getResourceAsStream(RFIDTXT);

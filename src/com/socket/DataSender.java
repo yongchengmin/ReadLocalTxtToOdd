@@ -6,7 +6,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Date;
 
+import com.RfidSocketServer;
 import com.callUrl.CallUtils;
 
 public class DataSender {
@@ -23,8 +25,9 @@ public class DataSender {
 		OutputStream outputStream = socket.getOutputStream();
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 		BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-		bufferedWriter.write("hello server, 你能 receiver my data?");
-//		bufferedWriter.write("from1:"+CallUtils.localIp());
+//		bufferedWriter.write("hello server, 你能 receiver my data?");
+//		bufferedWriter.write("from2:"+CallUtils.localIp());
+		bufferedWriter.write("from2:"+CallUtils.format(new Date(), RfidSocketServer.dmy_hms));
 		bufferedWriter.flush();
 		bufferedWriter.close();
 		socket.close();
