@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,7 +24,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.RfidSocketServer;
 import com.callUrl.CallUtils;
 import com.callUrl.ParamsUtil;
 import com.callUrl.RequestUtil;
@@ -203,6 +201,7 @@ public class MessageAcceptServer {
 	public final static String LOCALPATH = "localPath";
 	public final static String FILEUSER = "fileUser";
 	
+	public final static String port = "port";
 	public final static String appServer = "appServer";
 	public final static String appRoot = "appRoot";
 	public final static String reportName = "reportName";

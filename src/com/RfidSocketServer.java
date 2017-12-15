@@ -31,8 +31,9 @@ public class RfidSocketServer {
 	public static boolean send = false;
 	
 	public static void main(String[] args) throws IOException {
+		String port = MessageAcceptServer.getRfidTxt(MessageAcceptServer.port);
 		
-		ServerSocket server = new ServerSocket(8898);
+		ServerSocket server = new ServerSocket(Integer.valueOf(port));
 		Socket socket = null;
 		boolean flag = true;
 		
