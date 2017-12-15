@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,10 +21,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.RfidSocketServer;
+import com.callUrl.CallUtils;
 import com.callUrl.ParamsUtil;
 import com.callUrl.RequestUtil;
 import com.print.QuieeDirectPrintJobJava;
@@ -88,7 +91,7 @@ public class MessageAcceptServer {
 				e.printStackTrace();
 			}
 			if(getLine!=null){
-				System.out.println(getLine);
+//				System.out.println(getLine);
 				
 				//服务器校验
 				String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
@@ -101,15 +104,16 @@ public class MessageAcceptServer {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				System.out.println("result="+result);
+//				System.out.println("result="+result);
 				JSONObject jsonObject = JSONObject.fromObject(result);
 				String status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
 				String value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
-				System.out.println(status+":"+value);
+//				System.out.println(status+":"+value);
 				String path = MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH);
 				mkdir(path);
 				path += MessageAcceptServer.getRfidTxt(MessageAcceptServer.FILEUSER);
 				createTxt(path, status+":"+value+","+getLine, charsetName);
+				CallUtils.fieldSet(Boolean.TRUE);
 				if(!StringUtils.isEmpty(status)){
 					if(status.equals(MessageAcceptServer.getRfidTxt(MessageAcceptServer.success))){
 						//校验通过打印报表
@@ -119,7 +123,7 @@ public class MessageAcceptServer {
 						String printServiceName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.printServiceName);
 						QuieeDirectPrintJobJava a = new QuieeDirectPrintJobJava(appRoot, reportName, reportParams,printServiceName);
 						a.print();
-						System.out.println(appRoot);
+//						System.out.println(appRoot);
 					}else if(status.equals(MessageAcceptServer.getRfidTxt(MessageAcceptServer.error))){
 						
 					}else{

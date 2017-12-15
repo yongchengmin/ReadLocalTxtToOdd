@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
@@ -14,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import com.RfidSocketServer;
 
 import net.sf.json.JSONObject;
 
@@ -192,5 +195,21 @@ public class CallUtils {
 			e.printStackTrace();
 		}
 		return localIp;
+	}
+	
+	public static void fieldSet(Boolean isSend){
+		try {
+			Object o=RfidSocketServer.class.newInstance();//获取对象
+			Field f=RfidSocketServer.class.getField("send");//根据key获取参数
+			f.set(o, isSend);
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
 	}
 }

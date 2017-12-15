@@ -28,7 +28,7 @@ public class RfidSocketServer {
 	static String temp2;
 	protected final static String file_no = "File not generated";
 	protected final static String CHARACTER = "utf-8";
-	static boolean send = false;
+	public static boolean send = false;
 	
 	public static void main(String[] args) throws IOException {
 		
@@ -92,7 +92,7 @@ public class RfidSocketServer {
 			while(flag){
 				socket = server.accept();
 				MessageAcceptServer.createHandlerThread(socket);
-				send = true;
+//				send = true;
 			}
 		} finally{
 			server.close();
