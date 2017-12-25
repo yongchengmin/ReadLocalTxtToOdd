@@ -214,4 +214,13 @@ public class CallUtils {
 			e.printStackTrace();
 		}
 	}
+	
+	//参数 num:字符串长度  str:需要显示的字符
+	public static String getStr(int num, String str){
+		StringBuffer sb = new StringBuffer("");
+		for(int i=0;i<num;i++){
+		   sb.append(str);
+		}
+		return sb.toString();
+	}
 }

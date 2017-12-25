@@ -40,7 +40,7 @@ public class RfidSocketServer {
         EventQueue.invokeLater(new Runnable(){
             @Override 
             public void run(){
-            	int width = 700;
+            	final int width = 700;
             	int height = 600;
                 final JFrame frame = new JFrame("RFID SEND");
                 jta = new JTextArea();
@@ -55,7 +55,7 @@ public class RfidSocketServer {
                     		temp1 =  readUsers();
                         	temp2 = "("+CallUtils.format(new Date(), dmy_hms)+")";
                             jta.append(temp1+temp2+"."+i+"\n");
-                            jta.append("----------"+"\n");
+                            jta.append(CallUtils.getStr(width, "-")+"\n");
 //                            if(!file_no.equals(temp1)){
 //                            	File file = new  File(MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH)
 //                            			+MessageAcceptServer.getRfidTxt(MessageAcceptServer.FILEUSER));  
