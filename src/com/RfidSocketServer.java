@@ -20,7 +20,7 @@ import com.socket.MessageAcceptServer;
 
 public class RfidSocketServer {
 	/**"yyyy-MM-dd HH:mm:ss*/
-	public static String dmy_hms = "yyyy-MM-dd HH:mm:ss";
+	public static String dmy_hms = "yy-MM-dd HH:mm:ss";
 	static JScrollPane jsp;
 	static JTextArea jta;
 	static int i = 1;
@@ -40,6 +40,8 @@ public class RfidSocketServer {
         EventQueue.invokeLater(new Runnable(){
             @Override 
             public void run(){
+            	int width = 700;
+            	int height = 600;
                 final JFrame frame = new JFrame("RFID SEND");
                 jta = new JTextArea();
                 jta.setCaretPosition(jta.getDocument().getLength());
@@ -51,8 +53,9 @@ public class RfidSocketServer {
                     public void actionPerformed(ActionEvent e) {
                     	if(send){
                     		temp1 =  readUsers();
-                        	temp2 = "_"+CallUtils.format(new Date(), dmy_hms);
-                            jta.append(temp1+temp2+"_"+i+"\n");
+                        	temp2 = "("+CallUtils.format(new Date(), dmy_hms)+")";
+                            jta.append(temp1+temp2+"."+i+"\n");
+                            jta.append("----------"+"\n");
 //                            if(!file_no.equals(temp1)){
 //                            	File file = new  File(MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH)
 //                            			+MessageAcceptServer.getRfidTxt(MessageAcceptServer.FILEUSER));  
@@ -84,7 +87,7 @@ public class RfidSocketServer {
                 ImageIcon icon=new ImageIcon("base.png");
                 frame.setIconImage(icon.getImage());  
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setPreferredSize(new Dimension(700,600));
+                frame.setPreferredSize(new Dimension(width,height));
                 frame.pack();
                 frame.setVisible(true);
             }

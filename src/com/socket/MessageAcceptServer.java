@@ -23,7 +23,6 @@ import java.util.Properties;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-
 import com.callUrl.CallUtils;
 import com.callUrl.ParamsUtil;
 import com.callUrl.RequestUtil;
@@ -90,27 +89,36 @@ public class MessageAcceptServer {
 			}
 			if(getLine!=null){
 //				System.out.println(getLine);
-				
+				String status = "no";
+				String value = "";
+				String showMesg = getLine;
 				//服务器校验
-				String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
-				Map<String, Object> paramMap = new HashMap<String, Object>();
-				paramMap.put("data", getLine);
-				String result = null;
-				try {
-					result = RequestUtil.post(ParamsUtil.convertObjectToStringParams(paramMap),
-							url);
-				} catch (Exception e) {
-					e.printStackTrace();
+				String beServer = MessageAcceptServer.getRfidTxt(MessageAcceptServer.beServer);
+				if(!StringUtils.isEmpty(beServer)){
+					if(CallUtils.YESE.equals(beServer)){
+						String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
+						Map<String, Object> paramMap = new HashMap<String, Object>();
+						paramMap.put("data", getLine);
+						String result = null;
+						try {
+							result = RequestUtil.post(ParamsUtil.convertObjectToStringParams(paramMap),
+									url);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+//						System.out.println("result="+result);
+						JSONObject jsonObject = JSONObject.fromObject(result);
+						status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
+						value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
+//						System.out.println(status+":"+value);
+						showMesg = status+":"+value;
+					}
 				}
-//				System.out.println("result="+result);
-				JSONObject jsonObject = JSONObject.fromObject(result);
-				String status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
-				String value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
-//				System.out.println(status+":"+value);
+				
 				String path = MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH);
 				mkdir(path);
 				path += MessageAcceptServer.getRfidTxt(MessageAcceptServer.FILEUSER);
-				createTxt(path, status+":"+value+","+getLine, charsetName);
+				createTxt(path, showMesg, charsetName);
 				CallUtils.fieldSet(Boolean.TRUE);
 				if(!StringUtils.isEmpty(status)){
 					if(status.equals(MessageAcceptServer.getRfidTxt(MessageAcceptServer.success))){
@@ -202,14 +210,15 @@ public class MessageAcceptServer {
 	public final static String FILEUSER = "fileUser";
 	
 	public final static String port = "port";
+	public final static String beServer = "beServer";//是否经过服务验证 是/否  是:调用服务且返回yes打印报表
 	public final static String appServer = "appServer";
 	public final static String appRoot = "appRoot";
 	public final static String reportName = "reportName";
 	public final static String printServiceName = "printServiceName";
 	public final static String reportParams = "reportParams";
 	
-	public final static String status = "status";
-	public final static String value = "value";
+	public final static String status = "status";//返回状态 是/否
+	public final static String value = "value";//返回值标识  返回打印报表需要的参数
 	public final static String success = "success";
 	public final static String error = "error";
 	public static String getRfidTxt(String keyName){
