@@ -31,7 +31,7 @@ public class RfidSocketServer {
 	public static boolean send = false;
 	
 	public static void main(String[] args) throws IOException {
-		String port = MessageAcceptServer.getRfidTxt(MessageAcceptServer.port);
+		final String port = MessageAcceptServer.getRfidTxt(MessageAcceptServer.port);
 		
 		ServerSocket server = new ServerSocket(Integer.valueOf(port));
 		Socket socket = null;
@@ -42,7 +42,7 @@ public class RfidSocketServer {
             public void run(){
             	final int width = 700;
             	int height = 600;
-                final JFrame frame = new JFrame("RFID SEND");
+                final JFrame frame = new JFrame("RFID SEND "+port);
                 jta = new JTextArea();
                 jta.setCaretPosition(jta.getDocument().getLength());
                 jta.setFont(new Font(Font.DIALOG_INPUT,Font.BOLD,24));
