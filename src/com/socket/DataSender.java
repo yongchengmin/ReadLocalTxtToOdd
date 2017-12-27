@@ -19,9 +19,9 @@ public class DataSender {
 	 * @throws UnknownHostException 
 	 */
 	public static void main(String[] args) throws UnknownHostException, IOException {
-//		Socket socket = new Socket("127.0.0.1",8898);
+		Socket socket = new Socket("127.0.0.1",8898);
 //		Socket socket = new Socket("192.168.1.120",8898);
-		Socket socket = new Socket("192.168.2.104",8898);
+//		Socket socket = new Socket("192.168.2.104",8898);
 		//向服务器端程序发送数据
 		OutputStream outputStream = socket.getOutputStream();
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);

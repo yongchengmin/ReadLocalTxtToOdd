@@ -5,6 +5,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 //udp不需要和客户端连接，服务器监听A端口，客户端发送数据到A端口，服务器就会接收到。
 
+@SuppressWarnings("unused")
 public class UDPServer {
     public static void main(String args[]) throws Exception
     {

@@ -19,6 +19,7 @@ public class RequestUtil {
 
 	public static final String ENCODING = "UTF-8";
 	
+	@SuppressWarnings("unused")
 	private final static String CONTENT_TYPE_APPLICATION_JSON = "application/json";
 
 

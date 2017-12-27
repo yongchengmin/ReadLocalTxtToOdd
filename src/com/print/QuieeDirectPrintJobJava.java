@@ -9,7 +9,8 @@ import javax.print.PrintService;
 import com.runqian.report4.view.applet.AReport;
 
 public class QuieeDirectPrintJobJava {
-    private static final long serialVersionUID = 1L;
+    @SuppressWarnings("unused")
+	private static final long serialVersionUID = 1L;
 
     private String appRoot;
 
@@ -23,8 +24,9 @@ public class QuieeDirectPrintJobJava {
 
     private String cacheId;
 
-    private String needPrintPrompt;
-
+    @SuppressWarnings("unused")
+	private String needPrintPrompt;
+    @SuppressWarnings("unused")
     private String needSelectPrinter;
 
     private String needSetPageSize;

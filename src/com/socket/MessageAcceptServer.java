@@ -93,7 +93,7 @@ public class MessageAcceptServer {
 				String value = "";
 				String showMesg = getLine;
 				//服务器校验
-				String beServer = MessageAcceptServer.getRfidTxt(MessageAcceptServer.beServer);
+				String beServer = CallUtils.YESE;//MessageAcceptServer.getRfidTxt(MessageAcceptServer.beServer);
 				if(!StringUtils.isEmpty(beServer)){
 					if(CallUtils.YESE.equals(beServer)){
 						String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
