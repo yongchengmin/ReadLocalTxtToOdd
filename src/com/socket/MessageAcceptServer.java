@@ -91,6 +91,7 @@ public class MessageAcceptServer {
 //				System.out.println(getLine);
 				String status = "no";
 				String value = "";
+				String id = "";
 				String showMesg = getLine;
 				//服务器校验
 				String beServer = CallUtils.YESE;//MessageAcceptServer.getRfidTxt(MessageAcceptServer.beServer);
@@ -110,7 +111,8 @@ public class MessageAcceptServer {
 						JSONObject jsonObject = JSONObject.fromObject(result);
 						status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
 						value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
-//						System.out.println(status+":"+value);
+						id = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportParams));
+						System.out.println(status+":"+value+":"+id);
 						showMesg = status+":"+value;
 					}
 				}
@@ -123,7 +125,7 @@ public class MessageAcceptServer {
 				if(!StringUtils.isEmpty(status)){
 					if(status.equals(MessageAcceptServer.getRfidTxt(MessageAcceptServer.success))){
 						//校验通过打印报表
-						String reportParams="id=0;"+MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportParams)+"="+value;//id=0;ids=[172, 173]
+						String reportParams="id=0;"+MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportParams)+"="+id;//id=0;ids=[172, 173]
 						String appRoot = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appRoot);
 						String reportName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportName);
 						String printServiceName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.printServiceName);
