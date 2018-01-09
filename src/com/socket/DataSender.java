@@ -26,9 +26,9 @@ public class DataSender {
 		OutputStream outputStream = socket.getOutputStream();
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 		BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-//		bufferedWriter.write("hello server, 你能 receiver my data?");
+		bufferedWriter.write("LJ12EKP10E4603871");
 //		bufferedWriter.write("from2:"+CallUtils.localIp());
-		bufferedWriter.write("from2:"+CallUtils.format(new Date(), RfidSocketServer.dmy_hms));
+//		bufferedWriter.write("from2:"+CallUtils.format(new Date(), RfidSocketServer.dmy_hms));
 		bufferedWriter.flush();
 		bufferedWriter.close();
 		socket.close();

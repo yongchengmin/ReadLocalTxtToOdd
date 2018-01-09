@@ -98,8 +98,10 @@ public class MessageAcceptServer {
 				if(!StringUtils.isEmpty(beServer)){
 					if(CallUtils.YESE.equals(beServer)){
 						String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
+						String warehouseCode = MessageAcceptServer.getRfidTxt(MessageAcceptServer.warehouseCode);
 						Map<String, Object> paramMap = new HashMap<String, Object>();
 						paramMap.put("data", getLine);
+						paramMap.put("warehouseCode", warehouseCode);
 						String result = null;
 						try {
 							result = RequestUtil.post(ParamsUtil.convertObjectToStringParams(paramMap),
@@ -218,6 +220,7 @@ public class MessageAcceptServer {
 	public final static String reportName = "reportName";
 	public final static String printServiceName = "printServiceName";
 	public final static String reportParams = "reportParams";
+	public final static String warehouseCode = "warehouseCode";//指明入库编码
 	
 	public final static String status = "status";//返回状态 是/否
 	public final static String value = "value";//返回值标识  返回打印报表需要的参数
