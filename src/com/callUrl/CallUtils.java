@@ -22,8 +22,8 @@ import net.sf.json.JSONObject;
 
 public class CallUtils {
 	public static String enter = "\r\n";
-	public static String YESE = "是";
-	public static String NO = "否";
+	public static String YESE = "yes";
+	public static String NO = "no";
 	/**
 	 * @param args
 	 */

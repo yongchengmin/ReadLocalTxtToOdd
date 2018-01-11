@@ -32,25 +32,6 @@ import com.print.QuieeDirectPrintJobJava;
 public class MessageAcceptServer {
 	public static String dmy_hms = "yyyy-MM-dd HH:mm:ss";
 	public static String charsetName = "UTF-8";
-	public static void main(String[] args) throws IOException {
-		/*ServerSocket server = new ServerSocket(8898);
-		Socket socket = null;
-		boolean flag = true;
-		try {
-			while(flag){
-				socket = server.accept();
-				createHandlerThread(socket);
-			}
-		} finally{
-			server.close();
-		}*/
-		String reportParams="id=0;ids=[462260]";//id=0;ids=[172, 173]
-		String appRoot = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appRoot);
-		String reportName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportName);
-		String printServiceName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.printServiceName);
-		QuieeDirectPrintJobJava a = new QuieeDirectPrintJobJava(appRoot, reportName, reportParams,printServiceName);
-		a.print();
-	}
 	
 	public static void createHandlerThread(Socket socket){
 		MessageAcceptServer mas = MessageAcceptServer.getInstance();
@@ -94,30 +75,26 @@ public class MessageAcceptServer {
 				String id = "";
 				String showMesg = getLine;
 				//服务器校验
-				String beServer = CallUtils.YESE;//MessageAcceptServer.getRfidTxt(MessageAcceptServer.beServer);
-				if(!StringUtils.isEmpty(beServer)){
-					if(CallUtils.YESE.equals(beServer)){
-						String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
-						String warehouseCode = MessageAcceptServer.getRfidTxt(MessageAcceptServer.warehouseCode);
-						Map<String, Object> paramMap = new HashMap<String, Object>();
-						paramMap.put("data", getLine);
-						paramMap.put("warehouseCode", warehouseCode);
-						String result = null;
-						try {
-							result = RequestUtil.post(ParamsUtil.convertObjectToStringParams(paramMap),
-									url);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-//						System.out.println("result="+result);
-						JSONObject jsonObject = JSONObject.fromObject(result);
-						status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
-						value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
-						id = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportParams));
-						System.out.println(status+":"+value+":"+id);
-						showMesg = status+":"+value;
-					}
+				String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
+				String warehouseCode = MessageAcceptServer.getRfidTxt(MessageAcceptServer.warehouseCode);
+				String source = MessageAcceptServer.getRfidTxt(MessageAcceptServer.sourceId);
+				Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("data", getLine);
+				paramMap.put("warehouseCode", warehouseCode);
+				paramMap.put("source", source);
+				String result = null;
+				try {
+					result = RequestUtil.post(ParamsUtil.convertObjectToStringParams(paramMap),
+							url);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+//				System.out.println("result="+result);
+				JSONObject jsonObject = JSONObject.fromObject(result);
+				status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
+				value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
+//				System.out.println(status+":"+value+":"+id);
+				showMesg = status+":"+value;
 				
 				String path = MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH);
 				mkdir(path);
@@ -126,14 +103,18 @@ public class MessageAcceptServer {
 				CallUtils.fieldSet(Boolean.TRUE);
 				if(!StringUtils.isEmpty(status)){
 					if(status.equals(MessageAcceptServer.getRfidTxt(MessageAcceptServer.success))){
-						//校验通过打印报表
-						String reportParams="id=0;"+MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportParams)+"="+id;//id=0;ids=[172, 173]
-						String appRoot = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appRoot);
-						String reportName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportName);
-						String printServiceName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.printServiceName);
-						QuieeDirectPrintJobJava a = new QuieeDirectPrintJobJava(appRoot, reportName, reportParams,printServiceName);
-						a.print();
-//						System.out.println(appRoot);
+						String beServer = MessageAcceptServer.getRfidTxt(MessageAcceptServer.bePrint);
+						if(CallUtils.YESE.equals(beServer)){
+							id = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportParams));
+							//校验通过打印报表
+							String reportParams="id=0;"+MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportParams)+"="+id;//id=0;ids=[172, 173]
+							String appRoot = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appRoot);
+							String reportName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.reportName);
+							String printServiceName = MessageAcceptServer.getRfidTxt(MessageAcceptServer.printServiceName);
+							QuieeDirectPrintJobJava a = new QuieeDirectPrintJobJava(appRoot, reportName, reportParams,printServiceName);
+							a.print();
+//							System.out.println(appRoot);
+						}
 					}else if(status.equals(MessageAcceptServer.getRfidTxt(MessageAcceptServer.error))){
 						
 					}else{
@@ -143,7 +124,7 @@ public class MessageAcceptServer {
 					
 				}
 			}else{
-				System.out.println(format(new Date(), dmy_hms));
+//				System.out.println(format(new Date(), dmy_hms));
 			}
 			out.write("ok\n");
 			out.flush();
@@ -214,13 +195,14 @@ public class MessageAcceptServer {
 	public final static String FILEUSER = "fileUser";
 	
 	public final static String port = "port";
-	public final static String beServer = "beServer";//是否经过服务验证 是/否  是:调用服务且返回yes打印报表
+	public final static String bePrint = "bePrint";
 	public final static String appServer = "appServer";
 	public final static String appRoot = "appRoot";
 	public final static String reportName = "reportName";
 	public final static String printServiceName = "printServiceName";
 	public final static String reportParams = "reportParams";
 	public final static String warehouseCode = "warehouseCode";//指明入库编码
+	public final static String sourceId = "sourceId";//发送源  asn:入库,pick:出库
 	
 	public final static String status = "status";//返回状态 是/否
 	public final static String value = "value";//返回值标识  返回打印报表需要的参数

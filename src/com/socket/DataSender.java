@@ -6,11 +6,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Date;
-
-import com.RfidSocketServer;
-import com.callUrl.CallUtils;
-
 public class DataSender {
 
 	/**
@@ -26,7 +21,7 @@ public class DataSender {
 		OutputStream outputStream = socket.getOutputStream();
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 		BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-		bufferedWriter.write("LJ12EKP10E4603871");
+		bufferedWriter.write("LJ12EKP16E4603874");
 //		bufferedWriter.write("from2:"+CallUtils.localIp());
 //		bufferedWriter.write("from2:"+CallUtils.format(new Date(), RfidSocketServer.dmy_hms));
 		bufferedWriter.flush();

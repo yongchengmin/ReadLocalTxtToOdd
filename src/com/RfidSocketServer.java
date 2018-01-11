@@ -32,6 +32,7 @@ public class RfidSocketServer {
 	
 	public static void main(String[] args) throws IOException {
 		final String port = MessageAcceptServer.getRfidTxt(MessageAcceptServer.port);
+		final String source = MessageAcceptServer.getRfidTxt(MessageAcceptServer.sourceId);
 		
 		ServerSocket server = new ServerSocket(Integer.valueOf(port));
 		Socket socket = null;
@@ -40,22 +41,20 @@ public class RfidSocketServer {
         EventQueue.invokeLater(new Runnable(){
             @Override 
             public void run(){
-            	final int width = 700;
-            	int height = 600;
-                final JFrame frame = new JFrame("RFID SEND "+port);
+            	final int width = 1100;
+            	int height = 620;
+                final JFrame frame = new JFrame("RFID SEND "+port+" "+source);
                 jta = new JTextArea();
                 jta.setCaretPosition(jta.getDocument().getLength());
                 jta.setFont(new Font(Font.DIALOG_INPUT,Font.BOLD,24));
+//                jta.setEnabled(false);
+                jta.setEditable(false);
                 jsp = new JScrollPane(jta);
                 frame.add(jsp);
                 Timer timer = new Timer(500,new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                     	if(send){
-                    		temp1 =  readUsers();
-                        	temp2 = "("+CallUtils.format(new Date(), dmy_hms)+")";
-                            jta.append(temp1+temp2+"."+i+"\n");
-                            jta.append(CallUtils.getStr(width, "-")+"\n");
 //                            if(!file_no.equals(temp1)){
 //                            	File file = new  File(MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH)
 //                            			+MessageAcceptServer.getRfidTxt(MessageAcceptServer.FILEUSER));  
@@ -63,20 +62,26 @@ public class RfidSocketServer {
 //    								file.delete();
 //    							}
 //                            }
-                        	if(i>20){
+                        	if(i>8){
                         		frame.remove(jsp);
                         		
                         		jta = null;jsp = null;
                         		jta = new JTextArea();
                                 jta.setCaretPosition(jta.getDocument().getLength());
                                 jta.setFont(new Font(Font.DIALOG_INPUT,Font.BOLD,24));
+//                                jta.setEnabled(false);
+                                jta.setEditable(false);
                                 jsp = new JScrollPane(jta);
                         		
                         		frame.add(jsp);
                         		frame.validate();
                         		frame.repaint();
-                        		i = 0;
+                        		i = 1;
                         	}
+                    		temp1 =  readUsers();
+                        	temp2 = "("+CallUtils.format(new Date(), dmy_hms)+")";
+                            jta.append(temp1+temp2+"."+i+"\n");
+                            jta.append(CallUtils.getStr(width, "-")+"\n");
                         	i++;
                         	send = false;
                     	}
