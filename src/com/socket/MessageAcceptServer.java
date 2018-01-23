@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,8 +16,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -74,28 +77,54 @@ public class MessageAcceptServer {
 				String value = "";
 				String id = "";
 				String showMesg = getLine;
-				//服务器校验
-				String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
-				String warehouseCode = MessageAcceptServer.getRfidTxt(MessageAcceptServer.warehouseCode);
-				String source = MessageAcceptServer.getRfidTxt(MessageAcceptServer.sourceId);
-				Map<String, Object> paramMap = new HashMap<String, Object>();
-				paramMap.put("data", getLine);
-				paramMap.put("warehouseCode", warehouseCode);
-				paramMap.put("source", source);
-				String result = null;
-				try {
-					result = RequestUtil.post(ParamsUtil.convertObjectToStringParams(paramMap),
-							url);
-				} catch (Exception e) {
-					e.printStackTrace();
+				//是否验证信息 如果无则信息往这里写入,如果有则 产品验证完成之后,要将验证信息源文件删除,确保下一次不重读
+				//no-不做校验,dirver.txt,other1.txt,other2.txt,...-校验文件信息用英文逗号分隔(将来)
+				Boolean bego = true;
+				String checkTxt = MessageAcceptServer.getRfidTxt(MessageAcceptServer.CHECK_TXT);
+				String checkPath = MessageAcceptServer.getRfidTxt(MessageAcceptServer.CHECK_PATH);
+				mkdir(checkPath);
+				checkPath += checkTxt;
+				if(!StringUtils.isEmpty(checkTxt) && !CallUtils.NO.equals(checkTxt)){
+					List<String> list = null;
+					try {
+						list = fileToList(checkPath);
+					} catch (IOException e) {
+					}
+					if(list==null || list.size()<=0){
+						createTxt(checkPath, showMesg, charsetName);
+						bego = false;
+					}else{
+						getLine += ","+StringUtils.substringBetween(list.toString(), "[", "]");
+					}
 				}
-//				System.out.println("result="+result);
-				JSONObject jsonObject = JSONObject.fromObject(result);
-				status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
-				value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
-//				System.out.println(status+":"+value+":"+id);
-				showMesg = status+":"+value;
-				
+				JSONObject jsonObject = null;
+				if(bego){
+					//服务器校验
+					String url = MessageAcceptServer.getRfidTxt(MessageAcceptServer.appServer);
+					String warehouseCode = MessageAcceptServer.getRfidTxt(MessageAcceptServer.warehouseCode);
+					String source = MessageAcceptServer.getRfidTxt(MessageAcceptServer.sourceId);
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("data", getLine);
+					paramMap.put("warehouseCode", warehouseCode);
+					paramMap.put("source", source);
+					String result = null;
+					try {
+						result = RequestUtil.post(ParamsUtil.convertObjectToStringParams(paramMap),
+								url);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally{
+						deleteFile(new File(checkPath));
+					}
+//					System.out.println("result="+result);
+					jsonObject = JSONObject.fromObject(result);
+					status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
+					value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
+//					System.out.println(status+":"+value+":"+id);
+					showMesg = status+":"+value;
+				}else{
+					showMesg = getLine;
+				}
 				String path = MessageAcceptServer.getRfidTxt(MessageAcceptServer.LOCALPATH);
 				mkdir(path);
 				path += MessageAcceptServer.getRfidTxt(MessageAcceptServer.FILEUSER);
@@ -117,11 +146,7 @@ public class MessageAcceptServer {
 						}
 					}else if(status.equals(MessageAcceptServer.getRfidTxt(MessageAcceptServer.error))){
 						
-					}else{
-						
 					}
-				}else{
-					
 				}
 			}else{
 //				System.out.println(format(new Date(), dmy_hms));
@@ -138,6 +163,22 @@ public class MessageAcceptServer {
 			}
 		}
 		
+	}
+	public static List<String> fileToList(String pathname) throws IOException
+	{
+		List<String> list = new ArrayList<String>();
+		String lineinfo="";
+		File f=new File(pathname);
+		if(!f.exists()){
+			return null;
+		}
+		BufferedReader br=new BufferedReader(new FileReader(f));
+		while((lineinfo = br.readLine()) != null)
+		{
+			list.add(lineinfo.trim());
+		}
+	    br.close();
+		return list;
 	}
 	public static void fileWriter(String f,String row,String character) throws IOException{
 		File file = new File(f);
@@ -203,6 +244,9 @@ public class MessageAcceptServer {
 	public final static String reportParams = "reportParams";
 	public final static String warehouseCode = "warehouseCode";//指明入库编码
 	public final static String sourceId = "sourceId";//发送源  asn:入库,pick:出库
+	
+	public final static String CHECK_TXT = "checkTxt";
+	public final static String CHECK_PATH = "checkPath";
 	
 	public final static String status = "status";//返回状态 是/否
 	public final static String value = "value";//返回值标识  返回打印报表需要的参数
