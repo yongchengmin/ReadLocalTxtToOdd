@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -89,7 +90,9 @@ public class RfidSocketServer {
                 });
                 timer.start();
                 
-                ImageIcon icon=new ImageIcon("base.png");
+//                ImageIcon icon=new ImageIcon("base.png");
+                URL url = RfidSocketServer.class.getClassLoader().getResource("base.png");
+                ImageIcon icon=new ImageIcon(url);
                 frame.setIconImage(icon.getImage());  
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setPreferredSize(new Dimension(width,height));
