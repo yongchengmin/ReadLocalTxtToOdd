@@ -26,6 +26,8 @@ import java.util.Properties;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.conn.HttpHostConnectException;
+
 import com.callUrl.CallUtils;
 import com.callUrl.ParamsUtil;
 import com.callUrl.RequestUtil;
@@ -108,20 +110,32 @@ public class MessageAcceptServer {
 					paramMap.put("warehouseCode", warehouseCode);
 					paramMap.put("source", source);
 					String result = null;
+					Boolean beError = false;
 					try {
 						result = RequestUtil.post(ParamsUtil.convertObjectToStringParams(paramMap),
 								url);
 					} catch (Exception e) {
-						e.printStackTrace();
+						beError = true;
+						result = e.getMessage();
 					}finally{
 						deleteFile(new File(checkPath));
 					}
-//					System.out.println("result="+result);
-					jsonObject = JSONObject.fromObject(result);
-					status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
-					value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
-//					System.out.println(status+":"+value+":"+id);
-					showMesg = status+":"+value;
+					if(!beError){
+						try {
+							jsonObject = JSONObject.fromObject(result);
+						}catch (Exception e) {
+							beError = true;
+							result = e.getMessage();
+						}
+						if(!beError){
+							status = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.status));
+							value = jsonObject.getString(MessageAcceptServer.getRfidTxt(MessageAcceptServer.value));
+							showMesg = status+":"+value;
+						}
+					}
+					if(beError){
+						showMesg = result;
+					}
 				}else{
 					showMesg = getLine;
 				}
