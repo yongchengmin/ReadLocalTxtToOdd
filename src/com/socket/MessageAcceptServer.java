@@ -26,8 +26,6 @@ import java.util.Properties;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.conn.HttpHostConnectException;
-
 import com.callUrl.CallUtils;
 import com.callUrl.ParamsUtil;
 import com.callUrl.RequestUtil;
